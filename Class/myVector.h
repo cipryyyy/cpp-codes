@@ -50,6 +50,18 @@ public:
         }
         return elem[index];
     }
+    double get(int index) {
+        if (index < 0 || index >= sz) {
+            throw Invalid();
+        }
+        return elem[index];
+    }
+    void set(int index, double val = 0) {
+        if (index < 0 || index >= sz) {
+            throw Invalid();
+        }
+        elem[index] = val;
+    }
         
     int size() const{       //Ritorna la dimensione
         return sz;
