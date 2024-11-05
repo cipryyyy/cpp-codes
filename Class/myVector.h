@@ -37,6 +37,10 @@ public:
     ~Vector() {
         delete[] elem;
     }
+    
+    //move
+    Vector(Vector&& vec);
+    Vector& operator=(Vector&& vec);
         
     double& operator[](int index) {     //Passaggio a riferimento, consente lettura e scrittura
         if (index < 0 || index >= sz) {     //Errori nell'utilizzo
@@ -99,6 +103,24 @@ std::ostream& operator<<(std::ostream& os, const Vector& vec) {
     }
     os << "]";
     return os;
+}
+
+//move constructor
+Vector::Vector(Vector&& vec): sz{vec.sz}, elem{vec.elem}    //copio
+{
+    vec.sz = 0;             //annullo il vettore di partenza
+    vec.elem = nullptr;
+}
+// move assignment
+
+Vector& Vector::operator= (Vector&& vec) {
+    delete[] elem;      //Dealloco gli elementi attuali
+    elem = vec.elem;     //Punto a quelli nuovi
+    sz = vec.sz;        //copio la dimensione
+
+    vec.elem = nullptr;     //elimino la sorgente
+    vec.sz = 0;
+    return *this;       //ritorno
 }
 
 #endif /* Vector_h */
