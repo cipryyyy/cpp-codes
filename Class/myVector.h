@@ -14,10 +14,11 @@ class Vector {
     
 public:
     class Invalid{};     //Lancio di errori
-    //Costruttore
+    //Costruttore con elementi
     Vector(std::initializer_list<double>lst) : sz{static_cast<int>(lst.size())}, elem{new double[sz]} {
         std::copy(lst.begin(), lst.end(), elem);
     }
+    //costruttore vuoto
     Vector(int size = 0) : sz{size}, elem{new double[sz]}
     {
         if (sz == 0) {
@@ -26,6 +27,11 @@ public:
         for (int i = 0; i < sz; i++) {
             elem[i] = 0;                    //Assegnazione valori di default
         }
+    }
+    //Costruttore di copia
+    Vector(const Vector& vec) : sz{vec.size()}, elem{new double[sz]}
+    {
+        std::copy(vec.elem, vec.elem+sz, elem);
     }
     //Distruttore
     ~Vector() {
