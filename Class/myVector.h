@@ -1,6 +1,5 @@
 //
 //  Vector.h
-//  free
 //
 //  Created by andre on 05/11/24.
 //
@@ -8,7 +7,7 @@
 #ifndef Vector_h
 #define Vector_h
 
-class myVector {
+class Vector {
     
     int sz;         //Dimensione
     double *elem;   //puntatore
@@ -16,14 +15,20 @@ class myVector {
 public:
     class Invalid{};     //Lancio di errori
     //Costruttore
-    myVector(int size) : sz{size}, elem{new double[sz]}
+    Vector(std::initializer_list<double>lst) : sz{static_cast<int>(lst.size())}, elem{new double[sz]} {
+        std::copy(lst.begin(), lst.end(), elem);
+    }
+    Vector(int size = 0) : sz{size}, elem{new double[sz]}
     {
+        if (sz == 0) {
+            elem = nullptr;
+        }
         for (int i = 0; i < sz; i++) {
             elem[i] = 0;                    //Assegnazione valori di default
         }
     }
     //Distruttore
-    ~myVector() {
+    ~Vector() {
         delete[] elem;
     }
         
@@ -44,15 +49,18 @@ public:
         return sz;
     }
     
-    friend std::ostream& operator<<(std::ostream& os, const myVector& vec);     //Overload ostream
+    friend std::ostream& operator<<(std::ostream& os, const Vector& vec);     //Overload ostream
 
     void pushback(const double& el) {       //Aggiunta di elementi
+        if (sz == 0) {
+            elem = new double[1];
+        }
         elem[sz] = el;
         sz++;
     }
 };
 
-std::ostream& operator<<(std::ostream& os, const myVector& vec) {
+std::ostream& operator<<(std::ostream& os, const Vector& vec) {
     os << "[";
     for (int i = 0; i < vec.sz; i++) {
         os << vec[i];
