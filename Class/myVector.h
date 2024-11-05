@@ -55,6 +55,8 @@ public:
         return sz;
     }
     
+    //override =
+    Vector& operator= (const Vector& vec);
     friend std::ostream& operator<<(std::ostream& os, const Vector& vec);     //Overload ostream
 
     void pushback(const double& el) {       //Aggiunta di elementi
@@ -65,6 +67,15 @@ public:
         sz++;
     }
 };
+
+Vector& Vector::operator= (const Vector& vec) {
+    double *p = new double[vec.size()];
+    std::copy(vec.elem, vec.elem+sz, p);
+    delete[] elem;
+    elem = p;
+    sz = vec.sz;
+    return *this;
+}
 
 std::ostream& operator<<(std::ostream& os, const Vector& vec) {
     os << "[";
