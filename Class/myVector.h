@@ -19,7 +19,7 @@ public:
         std::copy(lst.begin(), lst.end(), elem);
     }
     //costruttore vuoto
-    Vector(int size = 0) : sz{size}, elem{new double[sz]}
+    explicit Vector(int size = 0) : sz{size}, elem{new double[sz]}
     {
         if (sz == 0) {
             elem = nullptr;
