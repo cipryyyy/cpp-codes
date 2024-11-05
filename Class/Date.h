@@ -6,9 +6,12 @@ namespace DateNamespace {
         gen=1, feb, mar, apr, mag, giu, lug, ago, set, ott, nov, dic
     };
     class Date {
-        int y, m, d;
+        int y{1970};
+        int m{gen};
+        int d{1};
     public:
-        
+        Date() {}
+        Date(int yy) : y{yy} {}
         Date(int yy, int mm, int dd) :  y{yy}, m{mm}, d{dd} {}
         
         friend inline void addDay(Date& date, int n);
