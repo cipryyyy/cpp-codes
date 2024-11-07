@@ -16,9 +16,6 @@ public:
         if (s > b) {
             reserve(s);
         }
-        if (s == 0) {
-            elem = nullptr;
-        }
         for (int i = 0; i < s; i++) {
             elem[i] = 0;
         }
@@ -107,7 +104,9 @@ public:
         }
         double *newElem = new double[newBuffer];
         
-        std::copy(elem, elem+s, newElem);
+        if (s > 0) {
+            std::copy(elem, elem+s, newElem);
+        }
         delete[] elem;
         
         elem = newElem;
@@ -126,7 +125,7 @@ public:
         if (s == 0) {
             throw Invalid();
         }
-        return elem[s--];
+        return elem[--s];
     }
     
     //size
