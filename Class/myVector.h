@@ -1,145 +1,153 @@
 #ifndef Vector_h
 #define Vector_h
 
-template <typename T>
-class Vector {
-    int sz;
-    int capacity;
-    T* elem;
+constexpr int BUFFER = 256;
+
+class Vector{
+private:
+    int s;
+    int b;
+    double *elem;
 
 public:
     class Invalid{};
     
-    Vector(std::initializer_list<T> lst)
-        : sz{static_cast<int>(lst.size())}, capacity{static_cast<int>(lst.size())}, elem{new T[capacity]} {
-        for (int i = 0; i < sz; ++i) {
-            elem[i] = *(lst.begin() + i);
+    Vector(int size = 0) : s{size}, b{BUFFER}, elem{new double[b]} {        //Costruttore standard
+        if (s > b) {
+            reserve(s);
+        }
+        if (s == 0) {
+            elem = nullptr;
+        }
+        for (int i = 0; i < s; i++) {
+            elem[i] = 0;
         }
     }
-    
-    explicit Vector(int size = 0)
-        : sz{size}, capacity{size > 0 ? size : 1}, elem{new T[capacity]} {
-        for (int i = 0; i < sz; i++) {
-            elem[i] = T{};
-        }
+    //initlist
+    Vector(std::initializer_list<double>lst) : s{static_cast<int>(lst.size())}, b{BUFFER}, elem{new double[b]} {
+        std::copy(lst.begin(), lst.end(), elem);
     }
-    
-    Vector(const Vector& vec)
-        : sz{vec.sz}, capacity{vec.capacity}, elem{new T[capacity]} {
-        for (int i = 0; i < sz; i++) {
-            elem[i] = vec.elem[i];
-        }
-    }
-    
+    //distruttore
     ~Vector() {
         delete[] elem;
     }
-    
-    Vector(Vector&& vec) noexcept : sz{vec.sz}, capacity{vec.capacity}, elem{vec.elem} {
-        vec.sz = 0;
-        vec.capacity = 0;
-        vec.elem = nullptr;
-    }
-    
-    Vector& operator=(Vector&& vec) noexcept {
-        if (this != &vec) {
-            delete[] elem;
-            elem = vec.elem;
-            sz = vec.sz;
-            capacity = vec.capacity;
-            vec.elem = nullptr;
-            vec.sz = 0;
-            vec.capacity = 0;
+    //copy
+    Vector& operator=(const Vector& copy) {
+        if (this == &copy) {
+            return *this;
         }
+        
+        delete[] elem;
+        
+        s = copy.s;
+        b = copy.b;
+        elem = new double[b];
+        std::copy(copy.elem, copy.elem + s, elem);
+        
         return *this;
     }
+    Vector(const Vector& copy) : s{copy.s}, b{copy.b}, elem{new double[b]} {
+        std::copy(copy.elem, copy.elem+s, elem);
+    }
     
-    T& operator[](int index) {
-        if (index < 0 || index >= sz) {
-            throw Invalid();
+    //move
+    
+    Vector& operator=(Vector&& move) noexcept {
+        if (this == &move) {
+            return *this;
         }
+        
+        delete[] elem;
+        
+        s = move.s;
+        b = move.b;
+        elem = move.elem;
+        
+        move.s = 0;
+        move.b = 0;
+        move.elem = nullptr;
+        
+        return *this;
+    }
+    Vector(Vector&& move) noexcept : s{move.s}, b{move.b}, elem{move.elem} {
+        move.s = 0;
+        move.b = 0;
+        move.elem = nullptr;
+    }
+    
+    //override[]
+    double& operator[](int index) {
+        return elem[index];
+    }
+    const double& operator[](int index) const {
         return elem[index];
     }
     
-    const T& operator[](int index) const {
-        if (index < 0 || index >= sz) {
-            throw Invalid();
-        }
-        return elem[index];
-    }
+    //override <<
+    friend std::ostream& operator<<(std::ostream& os, const Vector& vec);
     
-    T get(int index) const {
-        if (index < 0 || index >= sz) {
-            throw Invalid();
-        }
-        return elem[index];
-    }
-    
-    void set(int index, T val = T{}) {
-        if (index < 0 || index >= sz) {
+    //safeGet and safeSet
+    void set(int index, double val) {
+        if (index < 0 || index >= s) {
             throw Invalid();
         }
         elem[index] = val;
     }
+    double get(int index) {
+        if (index < 0 || index >= s) {
+            throw Invalid();
+        }
+        return elem[index];
+    }
+    
+    //reserve
+    void reserve(int newBuffer) {
+        if (newBuffer <= b) {
+            return;
+        }
+        double *newElem = new double[newBuffer];
         
+        std::copy(elem, elem+s, newElem);
+        delete[] elem;
+        
+        elem = newElem;
+        b = newBuffer;
+    }
+    
+    //pushback and popback
+    void pushback(double val) {
+        if (s == b) {
+            throw Invalid();
+        }
+        elem[s++] = val;
+    }
+    
+    double popback() {
+        if (s == 0) {
+            throw Invalid();
+        }
+        return elem[s--];
+    }
+    
+    //size
     int size() const {
-        return sz;
+        return s;
     }
-    
-    int get_capacity() const {
-        return capacity;
-    }
-
-    Vector& operator=(const Vector& vec) {
-        if (this != &vec) {
-            T* p = new T[vec.capacity];
-            for (int i = 0; i < vec.sz; i++) {
-                p[i] = vec.elem[i];
-            }
-            delete[] elem;
-            elem = p;
-            sz = vec.sz;
-            capacity = vec.capacity;
-        }
-        return *this;
-    }
-    
-    friend std::ostream& operator<<(std::ostream& os, const Vector& vec) {
-        os << "[";
-        for (int i = 0; i < vec.sz; i++) {
-            os << vec[i];
-            if (i < vec.sz - 1) {
-                os << ", ";
-            }
-        }
-        os << "]";
-        return os;
-    }
-    
-    void pushback(const T& el) {
-        if (sz == capacity) {
-            capacity = capacity * 2;
-            T* new_elem = new T[capacity];
-            for (int i = 0; i < sz; i++) {
-                new_elem[i] = elem[i];
-            }
-            delete[] elem;
-            elem = new_elem;
-        }
-        elem[sz] = el;
-        sz++;
-    }
-    
-    std::string join(std::string inter) {
-        std::string res;
-        for (int i = 0; i < sz; i++) {
-            res += elem[i];
-            if (i < sz-1) {
-                res += inter;
-            }
-        }
-        return res;
+    int buffer() const {
+        return b;
     }
 };
 
-#endif /* Vector_h */
+std::ostream& operator<<(std::ostream& os, const Vector& vec) {
+    os << "[";
+    for (int i = 0; i < vec.s; i++) {
+        os << vec.elem[i];
+        if (i < vec.s-1) {
+            os << ", ";
+        }
+    }
+    os << "]";
+    return os;
+}
+
+#endif /*Vector_h*/
