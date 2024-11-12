@@ -1,5 +1,5 @@
-#ifndef template_h
-#define template_h
+#ifndef myVector_h
+#define myVector_h
 
 constexpr int DEF = 1024;
 template <typename T>
