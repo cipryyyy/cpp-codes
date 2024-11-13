@@ -19,11 +19,6 @@ public:
             return "Size 0, cannot decrement!";
         }
     };
-    struct ElementNotFoundException : public std::exception {
-        const char* what() const noexcept override {
-            return "Element not in vector!";
-        }
-    };
     
     explicit Vector(int size = 0) : s{size}, b{(size>BUF)? size : BUF}, elem{(size==0)? nullptr : new T[BUF]} {
         for (int i = 0; i < s; i++) {
