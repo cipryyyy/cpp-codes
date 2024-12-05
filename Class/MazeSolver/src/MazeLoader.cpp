@@ -6,8 +6,9 @@ Maze::Maze(std::string path) {
         std::string line;
         std::getline(file, line);
         for (int x = 0; x < DIM; x++) {
-            MazeMatrix[y][x] = line[x];
+            MazeMatrix[x][y] = line[x];
             if (line[x] == 'S') {
+                MazeMatrix[x][y] = ' ';
                 currentPos[0] = x;
                 currentPos[1] = y;
             }
@@ -28,16 +29,16 @@ int* Maze::getEnd() noexcept{
 }
 
 const bool Maze::isRightWall() const noexcept{
-    return (MazeMatrix[currentPos[0]][currentPos[1]+1]=='*');
-}
-const bool Maze::isLeftWall() const noexcept{
-    return (MazeMatrix[currentPos[0]][currentPos[1]-1]=='*');
-}
-const bool Maze::isTopWall() const noexcept{
     return (MazeMatrix[currentPos[0]+1][currentPos[1]]=='*');
 }
-const bool Maze::isBottomWall() const noexcept{
+const bool Maze::isLeftWall() const noexcept{
     return (MazeMatrix[currentPos[0]-1][currentPos[1]]=='*');
+}
+const bool Maze::isTopWall() const noexcept{
+    return (MazeMatrix[currentPos[0]][currentPos[1]-1]=='*');
+}
+const bool Maze::isBottomWall() const noexcept{
+    return (MazeMatrix[currentPos[0]][currentPos[1]+1]=='*');
 }
 
 void Maze::move(int x, int y) {
@@ -45,13 +46,17 @@ void Maze::move(int x, int y) {
         throw Maze::Invalid();
     }
     currentPos[0] += x;
-    currentPos[1] += y;
+    currentPos[1] -= y;
 }
 
 std::ostream& operator<< (std::ostream& os, const Maze& maze) {
-    for (int i = 0; i < maze.DIM; i++) {
-        for (int j = 0; j < maze.DIM; j++) {
-            os << maze.MazeMatrix[i][j];
+    for (int y = 0; y < maze.DIM; y++) {
+        for (int x = 0; x < maze.DIM; x++) {
+            if (x == maze.currentPos[0] && y == maze.currentPos[1]) {
+                os << "+";
+            } else {
+                os << maze.MazeMatrix[x][y];
+            }
         }
         os << std::endl;
     }

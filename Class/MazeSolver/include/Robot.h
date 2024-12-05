@@ -3,28 +3,36 @@
 #include "MazeLoader.h"
 
 class Robot{
-private:
-    Maze maze;
-    char direction;
+protected:
+    Maze& maze;
+    void moveUp() noexcept;
+    void moveDown() noexcept;
+    void moveRight() noexcept;
+    void moveLeft() noexcept;
 
-    void moveUp();
-    void moveDown();
-    void moveRight();
-    void moveLeft();
 public:
-    Robot(const Maze& obj);
+    Robot(Maze& obj);
 
-    int* getPosition();
-    bool isDone();
-    virtual void move(char direction);
+    int* getPosition() noexcept;
+    virtual void move(char direction) noexcept;
 };
 
 class RandomRobot : public Robot {
-    void move();
+    bool isDone() noexcept;
+    std::vector<std::string> moves;
+public:
+    RandomRobot(Maze& obj) : Robot(obj) {}
+    void move() noexcept;
+    std::vector<std::string> getMoves() noexcept;
 };
 
 class RightHandRuleRobot : public Robot {
-    void move();
+    char direction;
+public:
+    RightHandRuleRobot(Maze& obj) : Robot(obj) {
+        direction = 'u';
+    }
+    void move() noexcept;
 };
 
 #endif
