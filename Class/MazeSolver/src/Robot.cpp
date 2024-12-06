@@ -97,6 +97,9 @@ void RandomRobot::move() noexcept {
         //Se ho finito o ho terminato i tentativi
         if (Robot::isDone() || Robot::moves.size() == RandomRobot::attempts) {
             loop = false;
+            if (Robot::isDone()) {
+                Robot::moves.push_back("SOLVED");       //Scrivo se lo ho risolto
+            }
             return;
         }
     }
@@ -107,15 +110,19 @@ inline void RandomRobot::setAttempt(int n) noexcept {
 
 // RightHandRuleRobot Section
 void RightHandRuleRobot::move() noexcept {
+    std::srand(std::time(nullptr));
     bool loop = true;
     while (loop) {
         //Se ho finito o ho terminato i tentativi
         if (Robot::isDone() || Robot::moves.size() == RightHandRuleRobot::attempts) {
             loop = false;
+            if (Robot::isDone()) {
+                Robot::moves.push_back("SOLVED");
+            }
             return;
         }
 
-        //Se sono nel mezzo, proseguo lungo la direzione
+        //Se sono nel mezzo, proseguo lungo la direzione r
         if (!maze.isBottomWall() && !maze.isTopWall() && !maze.isLeftWall() && !maze.isRightWall()) {
             switch (direction) {
             case 'r':
