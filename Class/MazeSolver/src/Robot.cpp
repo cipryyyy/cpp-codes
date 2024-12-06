@@ -104,7 +104,7 @@ void RandomRobot::move() noexcept {
         }
     }
 }
-inline void RandomRobot::setAttempt(int n) noexcept {
+void RandomRobot::setAttempt(int n) noexcept {
     RandomRobot::attempts = n;
 }
 
@@ -177,7 +177,6 @@ void RightHandRuleRobot::move() noexcept {
     }
 }
 
-inline void RightHandRuleRobot::setAttempt(int n) noexcept{
+void RightHandRuleRobot::setAttempt(int n) noexcept{
     RightHandRuleRobot::attempts = n;
 }
-
