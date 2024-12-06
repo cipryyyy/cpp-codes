@@ -1,14 +1,13 @@
 #ifndef Maze_h
 #define Maze_h
-#include <fstream>
-#include <cstdlib>
+#include <fstream>      //Stream per la lettura file
 
 class Maze{
 private:
-    static constexpr int DIM = 9;
-    int end[2];
-    int currentPos[2];
-    char MazeMatrix[DIM][DIM];
+    static constexpr int DIM = 9;       //Dimensione del labirinto
+    int end[2];                         //Punto d'arrivo
+    int currentPos[2];                  //Posizione attuale
+    char MazeMatrix[DIM][DIM];          //Matrice con i dati del labirinto
 public:
     class Invalid {};
 
@@ -22,9 +21,9 @@ public:
     const bool isTopWall() const noexcept;
     const bool isBottomWall() const noexcept;
 
-    void move(int x, int y);
+    void move(int x, int y);                //Sposta la posizione corrente
 
-    friend std::ostream& operator<< (std::ostream& os, const Maze& maze);
+    friend std::ostream& operator<< (std::ostream& os, const Maze& maze);   //Stampa il labirinto
 };
 
 #endif

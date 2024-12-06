@@ -2,28 +2,28 @@
 
 //Protected functions
 
-inline void Robot::moveUp() noexcept {
-    if (maze.isTopWall()) {
+inline void Robot::moveUp() noexcept { //Se vado su
+    if (maze.isTopWall()) {             //Controllo che non ci sia il muro
         return;
     }
-    Robot::moves.push_back("Up");
-    maze.move(0,1);
+    Robot::moves.push_back("Up");           //Log
+    maze.move(0,1);                         //Mi muovo
 }
-inline void Robot::moveDown() noexcept {
+inline void Robot::moveDown() noexcept {    //...
     if (maze.isBottomWall()) {
         return;
     }
     Robot::moves.push_back("Down");
     maze.move(0,-1);
 }
-inline void Robot::moveRight() noexcept {
+inline void Robot::moveRight() noexcept {   //...
     if (maze.isRightWall()) {
         return;
     }
     Robot::moves.push_back("Right");
     maze.move(1,0);
 }
-inline void Robot::moveLeft() noexcept {
+inline void Robot::moveLeft() noexcept {    //...
     if (maze.isLeftWall()) {
         return;
     }
@@ -31,11 +31,11 @@ inline void Robot::moveLeft() noexcept {
     maze.move(-1,0);
 }
 
-inline bool Robot::isDone() noexcept {
-    int* position = Robot::getPosition();
-    int* end = Robot::maze.getEnd();
+inline bool Robot::isDone() noexcept {  
+    int* position = Robot::getPosition();       //Posizione attuale
+    int* end = Robot::maze.getEnd();            //Posizione d'arrivo
 
-    return (position[0] == end[0] && position[1] == end[1]);
+    return (position[0] == end[0] && position[1] == end[1]);        //Sono uguali?
 }
 
 //Robot Section
@@ -47,7 +47,7 @@ inline int* Robot::getPosition() noexcept {
 }
 
 void Robot::move(char direction) noexcept {
-    switch (direction)
+    switch (direction)                          //Comandi u, d, l, r
     {
     case 'u':
         Robot::moveUp();
@@ -73,12 +73,13 @@ std::vector<std::string> Robot::getMoves() noexcept {
 //RandomRobot Section
 
 void RandomRobot::move() noexcept {
-    std::srand(std::time(nullptr));
+    std::srand(std::time(nullptr));     //Credo un seme casuale
     bool loop = true;
-    while (loop) {
-        int choice = std::rand() % 4;
 
-        switch (choice) {
+    while (loop) {
+        int choice = std::rand() % 4;   //Genero un numero tra 0 e 3
+
+        switch (choice) {               //Decido che movimento fare
         case 0:
             Robot::moveUp();
             break;
@@ -93,8 +94,10 @@ void RandomRobot::move() noexcept {
             break;
         }
 
-        if (Robot::isDone()) {
+        //Se ho finito o ho terminato i tentativi
+        if (Robot::isDone() || Robot::moves.size() == RandomRobot::attempts) {
             loop = false;
+            return;
         }
     }
 }
@@ -106,11 +109,13 @@ inline void RandomRobot::setAttempt(int n) noexcept {
 void RightHandRuleRobot::move() noexcept {
     bool loop = true;
     while (loop) {
+        //Se ho finito o ho terminato i tentativi
         if (Robot::isDone() || Robot::moves.size() == RightHandRuleRobot::attempts) {
             loop = false;
             return;
         }
 
+        //Se sono nel mezzo, proseguo lungo la direzione
         if (!maze.isBottomWall() && !maze.isTopWall() && !maze.isLeftWall() && !maze.isRightWall()) {
             switch (direction) {
             case 'r':
@@ -127,6 +132,7 @@ void RightHandRuleRobot::move() noexcept {
                 break;
             }
         }
+        //Altrimenti, seguo il muro finché posso, poi giro
         else {
             if (direction == 'r') {
                 if (maze.isRightWall()) {
