@@ -18,7 +18,7 @@ int main(int argc, char* argv[]) {
         Maze mazeRHRR(argv[1]);                 //Creo un oggetto Maze per il primo robot
         Maze mazeRNDR(argv[1]);                 //Creo un oggetto Maze per il secondo
         RightHandRuleRobot robotRHRR(mazeRHRR);     //Creo un oggetto Robot con regola della mano destra
-        RandomRobot robotRNDM(mazeRNDR);     //Creo un oggetto Robot con movimenti casuali
+        RandomHandRuleRobot robotRNDM(mazeRNDR);     //Creo un oggetto Robot con movimenti casuali
 
         cout << mazeRHRR;
 
@@ -28,7 +28,7 @@ int main(int argc, char* argv[]) {
         //Risultati
         cout << "Lista mosse con regola della mano destra:" << endl;
         printVector(robotRHRR.getMoves());
-        cout << "Lista mosse con movimenti casuali:" << endl;
+        cout << "Lista mosse con mano casuale:" << endl;
         printVector(robotRNDM.getMoves());
 
     } else {

@@ -96,6 +96,9 @@ void RandomRobot::move() noexcept {
 
         //Se ho finito o ho terminato i tentativi
         if (Robot::isDone() || Robot::moves.size() == RandomRobot::attempts) {
+            if (Robot::isDone()) {
+                Robot::moves.push_back("SOLVED");
+            }
             loop = false;
             return;
         }
@@ -112,6 +115,9 @@ void RightHandRuleRobot::move() noexcept {
         //Se ho finito o ho terminato i tentativi
         if (Robot::isDone() || Robot::moves.size() == RightHandRuleRobot::attempts) {
             loop = false;
+            if (Robot::isDone()) {
+                Robot::moves.push_back("SOLVED");
+            }
             return;
         }
 
@@ -174,3 +180,94 @@ inline void RightHandRuleRobot::setAttempt(int n) noexcept{
     RightHandRuleRobot::attempts = n;
 }
 
+//RandomHandRuleRobot Section
+
+void RandomHandRuleRobot::move() noexcept {
+    bool loop = true;
+    std::srand(std::time(nullptr));
+
+    while (loop) {
+        //Se ho finito o ho terminato i tentativi
+        if (Robot::isDone() || Robot::moves.size() == RightHandRuleRobot::attempts) {
+            loop = false;
+            if (Robot::isDone()) {
+                Robot::moves.push_back("SOLVED");
+            }
+            return;
+        }
+
+        //Se sono nel mezzo, proseguo lungo la direzione
+        if (!maze.isBottomWall() && !maze.isTopWall() && !maze.isLeftWall() && !maze.isRightWall()) {
+            switch (direction) {
+            case 'r':
+                Robot::moveRight();
+                break;
+            case 'l':
+                Robot::moveLeft();
+                break;
+            case 'u':
+                Robot::moveUp();
+                break;
+            case 'd':
+                Robot::moveDown();
+                break;
+            }
+        }
+        //Altrimenti, seguo il muro finché posso, poi giro
+        else {
+            int choice = std::rand() % 2;
+            if (direction == 'r') {
+                if (maze.isRightWall()) {
+                    if (choice == 0) {
+                        direction = 'd';
+                        Robot::moveDown();
+                    } else {
+                        direction = 'u';
+                        Robot::moveUp();
+                    }
+                } else {
+                    Robot::moveRight();
+                }
+            }
+            else if (direction == 'd') {
+                if (maze.isBottomWall()) {
+                    if (choice == 0) {
+                        direction = 'r';
+                        Robot::moveRight();
+                    } else {
+                        direction = 'l';
+                        Robot::moveLeft();
+                    }
+                } else {
+                    Robot::moveDown();
+                }
+            }
+            else if (direction == 'l') {
+                if (maze.isLeftWall()) {
+                    if (choice == 0) {
+                        direction = 'u';
+                        Robot::moveUp();
+                    } else {
+                        direction = 'd';
+                        Robot::moveDown();
+                    }
+                } else {
+                    Robot::moveLeft();
+                }
+            }
+            else if (direction == 'u') {
+                if (maze.isTopWall()) {
+                    if (choice == 0) {
+                        direction = 'l';
+                        Robot::moveLeft();
+                    } else {
+                        direction = 'r';
+                        Robot::moveRight();
+                    }
+                } else {
+                    Robot::moveUp();
+                }
+            }
+        }
+    }
+}

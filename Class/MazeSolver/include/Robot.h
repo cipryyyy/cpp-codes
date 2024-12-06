@@ -29,13 +29,18 @@ public:
 };
 
 class RightHandRuleRobot : public Robot {       //Regola della mano destra
-private:
+protected:
     char direction = 'r';           //Direzione in cui guarda il robot
     int attempts = 256;             //Tentativi disponibili
 public:
     RightHandRuleRobot(Maze& obj) : Robot(obj) {}
     void move() noexcept;                       //Risolutore
     void setAttempt(int n) noexcept;
+};
+
+struct RandomHandRuleRobot : public RightHandRuleRobot {
+    RandomHandRuleRobot(Maze& obj) : RightHandRuleRobot(obj) {}
+    void move() noexcept;                       //Risolutore
 };
 
 #endif

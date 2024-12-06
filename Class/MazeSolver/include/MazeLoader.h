@@ -15,11 +15,13 @@ public:
 
     int* getPosition() noexcept;
     int* getEnd() noexcept;
+    int getDim() noexcept;
 
     const bool isRightWall() const noexcept;
     const bool isLeftWall() const noexcept;
     const bool isTopWall() const noexcept;
     const bool isBottomWall() const noexcept;
+
 
     void move(int x, int y);                //Sposta la posizione corrente
 

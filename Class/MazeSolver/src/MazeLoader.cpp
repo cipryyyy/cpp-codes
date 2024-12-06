@@ -32,6 +32,9 @@ int* Maze::getPosition() noexcept{
 int* Maze::getEnd() noexcept{
     return end;
 }
+int Maze::getDim() noexcept {
+    return DIM;
+}
 
 //Controlli per vedere se tocco il muro
 const bool Maze::isRightWall() const noexcept{
@@ -46,6 +49,7 @@ const bool Maze::isTopWall() const noexcept{
 const bool Maze::isBottomWall() const noexcept{
     return (MazeMatrix[currentPos[0]][currentPos[1]+1]=='*');
 }
+
 
 //Movimento e controllo che mi muovo solo di modulo 1 e in una sola direzione
 void Maze::move(int x, int y) {
