@@ -2,6 +2,11 @@
 
 Maze::Maze(std::string path) {
     std::ifstream file(path);
+
+    if (!file.is_open()) {
+        throw Invalid();
+    }
+
     for (int y = 0; y < DIM; y++) {
         std::string line;
         std::getline(file, line);

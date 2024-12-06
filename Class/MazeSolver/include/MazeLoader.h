@@ -1,6 +1,5 @@
 #ifndef Maze_h
 #define Maze_h
-#include <string>
 #include <fstream>
 #include <cstdlib>
 
