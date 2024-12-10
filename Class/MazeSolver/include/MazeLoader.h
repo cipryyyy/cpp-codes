@@ -21,6 +21,11 @@ public:
     const bool isTopWall() const noexcept;
     const bool isBottomWall() const noexcept;
 
+    const bool isRightEnd() const noexcept;
+    const bool isLeftEnd() const noexcept;
+    const bool isTopEnd() const noexcept;
+    const bool isBottomEnd() const noexcept;
+
     void move(int x, int y);                //Sposta la posizione corrente
 
     friend std::ostream& operator<< (std::ostream& os, const Maze& maze);   //Stampa il labirinto

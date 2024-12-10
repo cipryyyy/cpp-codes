@@ -47,6 +47,19 @@ const bool Maze::isBottomWall() const noexcept{
     return (MazeMatrix[currentPos[0]][currentPos[1]+1]=='*');
 }
 
+const bool Maze::isRightEnd() const noexcept{
+    return (MazeMatrix[currentPos[0]+1][currentPos[1]]=='E');
+}
+const bool Maze::isLeftEnd() const noexcept{
+    return (MazeMatrix[currentPos[0]-1][currentPos[1]]=='E');
+}
+const bool Maze::isTopEnd() const noexcept{
+    return (MazeMatrix[currentPos[0]][currentPos[1]-1]=='E');
+}
+const bool Maze::isBottomEnd() const noexcept{
+    return (MazeMatrix[currentPos[0]][currentPos[1]+1]=='E');
+}
+
 //Movimento e controllo che mi muovo solo di modulo 1 e in una sola direzione
 void Maze::move(int x, int y) {
     if (((x > 1) || (x < -1)) || ((y > 1) || (y < -1)) || (x+y > 1)) {

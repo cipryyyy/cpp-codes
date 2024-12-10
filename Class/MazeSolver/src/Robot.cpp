@@ -112,6 +112,7 @@ void RandomRobot::setAttempt(int n) noexcept {
 void RightHandRuleRobot::move() noexcept {
     std::srand(std::time(nullptr));
     bool loop = true;
+
     while (loop) {
         //Se ho finito o ho terminato i tentativi
         if (Robot::isDone() || Robot::moves.size() == RightHandRuleRobot::attempts) {
@@ -122,57 +123,142 @@ void RightHandRuleRobot::move() noexcept {
             return;
         }
 
-        //Se sono nel mezzo, proseguo lungo la direzione r
-        if (!maze.isBottomWall() && !maze.isTopWall() && !maze.isLeftWall() && !maze.isRightWall()) {
-            switch (direction) {
-            case 'r':
-                Robot::moveRight();
-                break;
-            case 'l':
-                Robot::moveLeft();
-                break;
-            case 'u':
-                Robot::moveUp();
-                break;
-            case 'd':
-                Robot::moveDown();
-                break;
+        bool b = maze.isBottomWall();
+        bool t = maze.isTopWall();
+        bool r = maze.isRightWall();
+        bool l = maze.isLeftWall();
+    
+        if (b || t || r || l) {
+            if (memory) {
+                if (direction == 'r') {
+                    if (b) {
+                        if (r) {
+                            direction = 'u';
+                            Robot::moveUp();
+                            memory = maze.isRightWall();
+                        } else {
+                            Robot::moveRight();
+                        }
+                    } else {
+                        direction = 'd';
+                        Robot::moveDown();
+                        memory = maze.isLeftWall();
+                    }
+                }
+                if (direction == 'd') {
+                    if (l) {
+                        if (b) {
+                            direction = 'r';
+                            Robot::moveRight();
+                            memory = maze.isBottomWall();
+                        } else {
+                            Robot::moveDown();
+                        }
+                    } else {
+                        direction = 'l';
+                        Robot::moveLeft();
+                        memory = maze.isTopWall();
+                    }
+                }
+                if (direction == 'l') {
+                    if (t) {
+                        if (l) {
+                            direction = 'd';
+                            Robot::moveDown();
+                            memory = maze.isLeftWall();
+                        } else {
+                            Robot::moveLeft();
+                        }
+                    } else {
+                        direction = 'u';
+                        Robot::moveUp();
+                        memory = maze.isRightWall();
+                    }
+                }
+                if (direction == 'u') {
+                    if (r) {
+                        if (t) {
+                            direction = 'l';
+                            Robot::moveLeft();
+                            memory = maze.isTopWall();
+                        } else {
+                            Robot::moveUp();
+                        }
+                    } else {
+                        direction = 'r';
+                        Robot::moveRight();
+                        memory = maze.isBottomWall();
+                    }
+                }
+            } else {
+                if (direction == 'r') {
+                    if (r) {
+                        Robot::moveUp();
+                        direction = 'u';
+                        memory = maze.isRightWall();
+                    } else {
+                        Robot::moveRight();
+                        memory = maze.isBottomWall();
+                    }
+                }
+
+
+                if (direction == 'd') {
+                    if (b) {
+                        Robot::moveRight();
+                        direction = 'r';
+                        memory = maze.isBottomWall();
+                    } else {
+                        Robot::moveDown();
+                        memory = maze.isLeftWall();
+                    }
+                }
+
+
+                if (direction == 'l') {
+                    if (l) {
+                        Robot::moveDown();
+                        direction = 'd';
+                        memory = maze.isLeftWall();
+                    } else {
+                        Robot::moveLeft();
+                        memory = maze.isTopWall();
+                    }
+                }
+                if (direction == 'u') {
+                    if (t) {
+                        Robot::moveLeft();
+                        direction = 'l';
+                        memory = maze.isTopWall();
+                    } else {
+                        Robot::moveUp();
+                        memory = maze.isRightWall();
+                    }
+                }
             }
+        } else {
+            Robot::moveRight();         //Se sono nel mezzo, proseguo lungo destra
+            memory = maze.isBottomWall();
         }
-        //Altrimenti, seguo il muro finché posso, poi giro
-        else {
-            if (direction == 'r') {
-                if (maze.isRightWall()) {
-                    direction = 'd';
-                    Robot::moveDown();
-                } else {
-                    Robot::moveRight();
-                }
-            }
-            else if (direction == 'd') {
-                if (maze.isBottomWall()) {
-                    direction = 'l';
-                    Robot::moveLeft();
-                } else {
-                    Robot::moveDown();
-                }
-            }
-            else if (direction == 'l') {
-                if (maze.isLeftWall()) {
-                    direction = 'u';
-                    Robot::moveUp();
-                } else {
-                    Robot::moveLeft();
-                }
-            }
-            else if (direction == 'u') {
-                if (maze.isTopWall()) {
-                    direction = 'r';
-                    Robot::moveRight();
-                } else {
-                    Robot::moveUp();
-                }
-            }
+        if (maze.isBottomEnd()) {       //Se sono vicino alla fine, vado verso quelle coordinate
+            Robot::moveDown();
+            Robot::moves.push_back("SOLVED");
+            return;
+        }
+        if (maze.isTopEnd()) {
+            Robot::moveUp();
+            Robot::moves.push_back("SOLVED");
+            return;
+        }
+        if (maze.isRightEnd()) {
+            Robot::moveRight();
+            Robot::moves.push_back("SOLVED");
+            return;
+        }
+        if (maze.isLeftEnd()) {
+            Robot::moveLeft();
+            Robot::moves.push_back("SOLVED");
+            return;
         }
     }
 }
