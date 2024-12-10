@@ -1,4 +1,5 @@
 #include "../include/Robot.h"
+#include <iostream>
 
 //Protected functions
 
@@ -7,6 +8,7 @@ inline void Robot::moveUp() noexcept { //Se vado su
         return;
     }
     Robot::moves.push_back("Up");           //Log
+    direction = 'u';
     maze.move(0,1);                         //Mi muovo
 }
 inline void Robot::moveDown() noexcept {    //...
@@ -14,6 +16,7 @@ inline void Robot::moveDown() noexcept {    //...
         return;
     }
     Robot::moves.push_back("Down");
+    direction = 'd';
     maze.move(0,-1);
 }
 inline void Robot::moveRight() noexcept {   //...
@@ -21,6 +24,7 @@ inline void Robot::moveRight() noexcept {   //...
         return;
     }
     Robot::moves.push_back("Right");
+    direction = 'r';
     maze.move(1,0);
 }
 inline void Robot::moveLeft() noexcept {    //...
@@ -28,6 +32,7 @@ inline void Robot::moveLeft() noexcept {    //...
         return;
     }
     Robot::moves.push_back("Left");
+    direction = 'l';
     maze.move(-1,0);
 }
 
@@ -110,148 +115,67 @@ void RandomRobot::setAttempt(int n) noexcept {
 
 // RightHandRuleRobot Section
 void RightHandRuleRobot::move() noexcept {
-    std::srand(std::time(nullptr));
-    bool loop = true;
-
-    while (loop) {
-        //Se ho finito o ho terminato i tentativi
-        if (Robot::isDone() || Robot::moves.size() == RightHandRuleRobot::attempts) {
-            loop = false;
-            if (Robot::isDone()) {
-                Robot::moves.push_back("SOLVED");
-            }
-            return;
+    int movesCounter = 0;
+    while (movesCounter < attempts) {
+        movesCounter++;
+        switch (direction) {
+            case 'r':
+                if (maze.isBottomWall()) {
+                    if (maze.isRightWall()){
+                        Robot::moveUp();
+                        Robot::direction = 'u';
+                    } else {
+                        Robot::moveRight();
+                        Robot::moveDown();
+                    }
+                }
+                break;
+            case 'd':
+                if (maze.isLeftWall()) {
+                    if (maze.isBottomWall()){
+                        Robot::moveRight();
+                        Robot::direction = 'r';
+                    } else {
+                        Robot::moveDown();
+                        Robot::moveLeft();
+                    }
+                }
+                break;
+            case 'l':
+                if (maze.isTopWall()) {
+                    if (maze.isLeftWall()){
+                        Robot::moveDown();
+                        Robot::direction = 'd';
+                    } else {
+                        Robot::moveLeft();
+                        Robot::moveUp();
+                    }
+                }
+                break;
+            case 'u':
+                if (maze.isRightWall()) {
+                    if (maze.isTopWall()){
+                        Robot::moveLeft();
+                        Robot::direction = 'l';
+                    } else {
+                        Robot::moveUp();
+                        Robot::moveRight();
+                    }
+                }
+                break;
         }
-
-        bool b = maze.isBottomWall();
-        bool t = maze.isTopWall();
-        bool r = maze.isRightWall();
-        bool l = maze.isLeftWall();
-    
-        if (b || t || r || l) {
-            if (memory) {
-                if (direction == 'r') {
-                    if (b) {
-                        if (r) {
-                            direction = 'u';
-                            Robot::moveUp();
-                            memory = maze.isRightWall();
-                        } else {
-                            Robot::moveRight();
-                        }
-                    } else {
-                        direction = 'd';
-                        Robot::moveDown();
-                        memory = maze.isLeftWall();
-                    }
-                }
-                if (direction == 'd') {
-                    if (l) {
-                        if (b) {
-                            direction = 'r';
-                            Robot::moveRight();
-                            memory = maze.isBottomWall();
-                        } else {
-                            Robot::moveDown();
-                        }
-                    } else {
-                        direction = 'l';
-                        Robot::moveLeft();
-                        memory = maze.isTopWall();
-                    }
-                }
-                if (direction == 'l') {
-                    if (t) {
-                        if (l) {
-                            direction = 'd';
-                            Robot::moveDown();
-                            memory = maze.isLeftWall();
-                        } else {
-                            Robot::moveLeft();
-                        }
-                    } else {
-                        direction = 'u';
-                        Robot::moveUp();
-                        memory = maze.isRightWall();
-                    }
-                }
-                if (direction == 'u') {
-                    if (r) {
-                        if (t) {
-                            direction = 'l';
-                            Robot::moveLeft();
-                            memory = maze.isTopWall();
-                        } else {
-                            Robot::moveUp();
-                        }
-                    } else {
-                        direction = 'r';
-                        Robot::moveRight();
-                        memory = maze.isBottomWall();
-                    }
-                }
-            } else {
-                if (direction == 'r') {
-                    if (r) {
-                        Robot::moveUp();
-                        direction = 'u';
-                        memory = maze.isRightWall();
-                    } else {
-                        Robot::moveRight();
-                        memory = maze.isBottomWall();
-                    }
-                }
-
-
-                if (direction == 'd') {
-                    if (b) {
-                        Robot::moveRight();
-                        direction = 'r';
-                        memory = maze.isBottomWall();
-                    } else {
-                        Robot::moveDown();
-                        memory = maze.isLeftWall();
-                    }
-                }
-
-
-                if (direction == 'l') {
-                    if (l) {
-                        Robot::moveDown();
-                        direction = 'd';
-                        memory = maze.isLeftWall();
-                    } else {
-                        Robot::moveLeft();
-                        memory = maze.isTopWall();
-                    }
-                }
-                if (direction == 'u') {
-                    if (t) {
-                        Robot::moveLeft();
-                        direction = 'l';
-                        memory = maze.isTopWall();
-                    } else {
-                        Robot::moveUp();
-                        memory = maze.isRightWall();
-                    }
-                }
-            }
-        } else {
-            Robot::moveRight();         //Se sono nel mezzo, proseguo lungo destra
-            memory = maze.isBottomWall();
-        }
-        if (maze.isBottomEnd()) {       //Se sono vicino alla fine, vado verso quelle coordinate
+        if (maze.isBottomEnd()) {
             Robot::moveDown();
-            Robot::moves.push_back("SOLVED");
-            return;
-        }
-        if (maze.isTopEnd()) {
-            Robot::moveUp();
             Robot::moves.push_back("SOLVED");
             return;
         }
         if (maze.isRightEnd()) {
             Robot::moveRight();
+            Robot::moves.push_back("SOLVED");
+            return;
+        }
+        if (maze.isTopEnd()) {
+            Robot::moveUp();
             Robot::moves.push_back("SOLVED");
             return;
         }
@@ -262,7 +186,6 @@ void RightHandRuleRobot::move() noexcept {
         }
     }
 }
-
 void RightHandRuleRobot::setAttempt(int n) noexcept{
     RightHandRuleRobot::attempts = n;
 }

@@ -6,6 +6,7 @@ class Robot{        //Robot a controllo manuale
 protected:
     std::vector<std::string> moves;     //Elenco delle mosse fatte
     Maze& maze;                         //Labirinto in cui si trova il robot
+    char direction;           //Direzione in cui guarda il robot
     void moveUp() noexcept;     //Movimenti specifici, con controlli
     void moveDown() noexcept;
     void moveRight() noexcept;
@@ -30,26 +31,19 @@ public:
 
 class RightHandRuleRobot : public Robot {       //Regola della mano destra
 private:
-    char direction;           //Direzione in cui guarda il robot
-    bool memory;       //Nel passo precedente stavo toccando il muro alla destra della direzione?
     int attempts = 256;             //Tentativi disponibili
 public:
     RightHandRuleRobot(Maze& obj) : Robot(obj) {
         if (maze.isLeftWall()) {
             direction = 'd';
-            memory = maze.isLeftWall();
         } else if (maze.isTopWall()) {
             direction = 'l';
-            memory = maze.isTopWall();
         } else if (maze.isRightWall()) {
             direction = 'u';
-            memory = maze.isRightWall();
         } else if (maze.isBottomWall()) {
             direction = 'r';
-            memory = maze.isBottomWall();
         } else {
             direction = 'r';
-            memory = maze.isBottomWall();
         }
     }
     void move() noexcept;                       //Risolutore
