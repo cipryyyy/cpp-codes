@@ -20,10 +20,10 @@ int main(int argc, char* argv[]) {
         RightHandRuleRobot robotRHRR(mazeRHRR);     //Creo un oggetto Robot con regola della mano destra
         RandomRobot robotRNDM(mazeRNDR);     //Creo un oggetto Robot con movimenti casuali
 
-        cout << mazeRHRR;
+        //cout << mazeRHRR;
 
-        robotRHRR.move();   //Faccio partire i robot  
-        robotRNDM.move(); 
+        robotRHRR.move(true, 0.1);   //Faccio partire i robot  
+        robotRNDM.move(true, 0.1); 
 
         //Risultati
         cout << "Lista mosse con regola della mano destra:" << endl;

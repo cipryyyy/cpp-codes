@@ -2,15 +2,20 @@
 #define Robot_h
 #include "MazeLoader.h"
 
+//Librerie per le animazioni
+#include <thread>
+#include <chrono> 
+#include <cstdlib> 
+
 class Robot{        //Robot a controllo manuale
 protected:
     std::vector<std::string> moves;     //Elenco delle mosse fatte
     Maze& maze;                         //Labirinto in cui si trova il robot
     char direction;           //Direzione in cui guarda il robot
-    void moveUp() noexcept;     //Movimenti specifici, con controlli
-    void moveDown() noexcept;
-    void moveRight() noexcept;
-    void moveLeft() noexcept;
+    void moveUp() noexcept;     //Movimento verso l'alto
+    void moveDown() noexcept;   //Movimento verso il basso
+    void moveRight() noexcept;  //Movimento verso destra
+    void moveLeft() noexcept;   //Novimento verso sinistra
 
     bool isDone() noexcept;     //Controllo se sono arrivato alla fine
 public:
@@ -25,7 +30,7 @@ private:
     int attempts = 256;                 //Numero di tentativi prima del blocco
 public:
     RandomRobot(Maze& obj) : Robot(obj) {}
-    void move() noexcept;                   //Fa partire la risoluzione
+    void move(bool animate = false, double timer = 0.25) noexcept;                   //Fa partire la risoluzione
     void setAttempt(int n) noexcept;
 };
 
@@ -46,7 +51,7 @@ public:
             direction = 'r';
         }
     }
-    void move() noexcept;                       //Risolutore
+    void move(bool animate = false, double timer = 0.25) noexcept;                       //Risolutore
     void setAttempt(int n) noexcept;
 };
 

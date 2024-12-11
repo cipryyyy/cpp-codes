@@ -2,7 +2,6 @@
 #include <iostream>
 
 //Protected functions
-
 inline void Robot::moveUp() noexcept { //Se vado su
     if (maze.isTopWall()) {             //Controllo che non ci sia il muro
         return;
@@ -77,11 +76,16 @@ std::vector<std::string> Robot::getMoves() noexcept {
 
 //RandomRobot Section
 
-void RandomRobot::move() noexcept {
+void RandomRobot::move(bool animate, double timer) noexcept {
     std::srand(std::time(nullptr));     //Credo un seme casuale
     bool loop = true;
 
     while (loop) {
+        if (animate) {
+            std::cout << maze;
+            std::this_thread::sleep_for(std::chrono::duration<double>(timer));
+            system("clear");
+        }
         int choice = std::rand() % 4;   //Genero un numero tra 0 e 3
 
         switch (choice) {               //Decido che movimento fare
@@ -114,10 +118,14 @@ void RandomRobot::setAttempt(int n) noexcept {
 }
 
 // RightHandRuleRobot Section
-void RightHandRuleRobot::move() noexcept {
+void RightHandRuleRobot::move(bool animate, double timer) noexcept {
     int movesCounter = 0;
     while (movesCounter < attempts) {
-        movesCounter++;
+        if (animate) {
+            std::cout << maze;
+            std::this_thread::sleep_for(std::chrono::duration<double>(timer));
+            system("clear");
+        }
         switch (direction) {
             case 'r':
                 if (maze.isBottomWall()) {
@@ -128,6 +136,8 @@ void RightHandRuleRobot::move() noexcept {
                         Robot::moveRight();
                         Robot::moveDown();
                     }
+                } else {
+                    Robot::moveDown();
                 }
                 break;
             case 'd':
@@ -139,6 +149,8 @@ void RightHandRuleRobot::move() noexcept {
                         Robot::moveDown();
                         Robot::moveLeft();
                     }
+                } else {
+                    Robot::moveLeft();
                 }
                 break;
             case 'l':
@@ -150,6 +162,8 @@ void RightHandRuleRobot::move() noexcept {
                         Robot::moveLeft();
                         Robot::moveUp();
                     }
+                } else {
+                    Robot::moveUp();
                 }
                 break;
             case 'u':
@@ -161,6 +175,8 @@ void RightHandRuleRobot::move() noexcept {
                         Robot::moveUp();
                         Robot::moveRight();
                     }
+                } else {
+                    Robot::moveRight();
                 }
                 break;
         }
